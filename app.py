@@ -12,7 +12,7 @@ from db import (
 
 app = Flask(__name__)
 
-DOWNLOAD_DIR = "downloads"
+DOWNLOAD_DIR = "/home/navidrome/music"
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 init_db()
@@ -33,19 +33,28 @@ def yt_search(query, limit=10):
         return result["entries"]
 
 
+import re
+
+def safe_filename(title):
+    title = re.sub(r'[\\/*?:"<>|]', "", title)
+    title = re.sub(r"\s+", " ", title).strip()
+    return title
+
+
 def download_video(video_id, title):
     url = f"https://www.youtube.com/watch?v={video_id}"
+    safe_title = safe_filename(title)
 
     def progress_hook(d):
         if d["status"] == "downloading":
             set_download(video_id, title, "downloading")
         elif d["status"] == "finished":
-            filename = f"{video_id}.mp3"
+            filename = f"{safe_title}.mp3"
             set_download(video_id, title, "done", filename)
 
     ydl_opts = {
         "format": "bestaudio",
-        "outtmpl": f"{DOWNLOAD_DIR}/%(id)s.%(ext)s",
+        "outtmpl": f"{DOWNLOAD_DIR}/{safe_title}.%(ext)s",
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -60,7 +69,6 @@ def download_video(video_id, title):
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
-
 
 @app.route("/", methods=["GET"])
 def index():
@@ -117,4 +125,4 @@ def download(video_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False, host="0.0.0.0")
