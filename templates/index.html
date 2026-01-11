@@ -3,17 +3,42 @@
 <head>
     <title>MeTube Lite</title>
     <style>
-        body { font-family: Arial; background: #111; color: #eee; }
-        .container { max-width: 700px; margin: 100px auto; }
-        input { width: 100%; padding: 12px; font-size: 18px; }
-        button { padding: 10px 20px; margin-top: 10px; }
+        body {
+            background: #111;
+            color: #eee;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 700px;
+            margin: 120px auto;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border-radius: 6px;
+            border: none;
+        }
+        button {
+            margin-top: 12px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>🎬 MeTube Lite</h1>
+    <h1>🎵 MeTube Lite</h1>
     <form method="post" action="/search">
-        <input type="text" name="query" placeholder="Search YouTube…" required>
+        <input
+            type="text"
+            name="query"
+            placeholder="Search YouTube…"
+            required
+        >
+        <br>
         <button type="submit">Search</button>
     </form>
 </div>
