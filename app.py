@@ -123,6 +123,26 @@ def download(video_id):
     return redirect(url_for("search", q=query))
 
 
+def resume_pending_downloads():
+    """
+    On server startup, resume any downloads that were marked as 'downloading'
+    (e.g. server crashed or was restarted mid-download).
+    """
+    downloads = get_all_downloads()
+
+    for video_id, entry in downloads.items():
+        if entry["status"] == "downloading":
+            title = entry["title"]
+
+            t = threading.Thread(
+                target=download_video,
+                args=(video_id, title),
+                daemon=True,
+            )
+            t.start()
+
 
 if __name__ == "__main__":
+    init_db()
+    resume_pending_downloads()
     app.run(debug=False, host="0.0.0.0")
